@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-
+import VehicleCard from "../components/VehicleCard";
 function Home() {
 
     const [vehicles, setVehicles] = useState([]);
-
+    const [search, setSearch] = useState("");
     useEffect(() => {
 
         fetchVehicles();
@@ -56,6 +56,61 @@ function Home() {
                         Premium Cars. Premium Experience.
 
                     </p>
+                    <button
+        onClick={() =>
+            document
+                .getElementById("inventory")
+                ?.scrollIntoView({
+                    behavior: "smooth"
+                })
+        }
+        className="
+            mt-10
+            bg-red-600
+            hover:bg-red-700
+            transition
+            duration-300
+            px-10
+            py-4
+            rounded-full
+            text-xl
+            text-white
+            font-semibold"
+    >
+        Explore Collection →
+    </button>
+              <div className="mt-16 grid grid-cols-3 gap-12">
+
+        <div>
+            <h2 className="text-4xl font-bold text-red-500">
+                500+
+            </h2>
+
+            <p className="mt-2 text-gray-300">
+                Premium Cars
+            </p>
+        </div>
+
+        <div>
+            <h2 className="text-4xl font-bold text-red-500">
+                25+
+            </h2>
+
+            <p className="mt-2 text-gray-300">
+                Luxury Brands
+            </p>
+        </div>
+
+        <div>
+            <h2 className="text-4xl font-bold text-red-500">
+                10K+
+            </h2>
+
+            <p className="mt-2 text-gray-300">
+                Happy Customers
+            </p>
+        </div>
+        </div>
 
                 </div>
 
@@ -63,8 +118,10 @@ function Home() {
 
             {/* VEHICLES */}
 
-            <section className="bg-slate-900 py-20">
-
+            <section
+    id="inventory"
+    className="bg-slate-900 py-20"
+>
                 <div className="max-w-7xl mx-auto px-6">
 
                     <h2 className="text-white text-4xl font-bold mb-12">
@@ -73,54 +130,48 @@ function Home() {
 
                     </h2>
 
+                <div className="mb-12">
+
+   <input
+    type="text"
+    placeholder="Search by make, model or category..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="
+        w-full
+        bg-slate-800
+        text-white
+        p-5
+        rounded-2xl
+        outline-none
+        border
+        border-slate-700
+        focus:border-red-600
+        transition
+    "
+/>
+
+</div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
-                        {vehicles.map((vehicle) => (
+                       {vehicles
+    .filter((vehicle) => {
 
-                            <div
-                                key={vehicle.id}
-                                className="bg-slate-800 rounded-2xl overflow-hidden"
-                            >
+        const term = search.toLowerCase();
 
-                                <img
-                                    src={`http://localhost:5000/uploads/${vehicle.image}`}
-                                    alt={vehicle.make}
-                                    className="w-full h-60 object-cover"
-                                />
+        return (
+            vehicle.make.toLowerCase().includes(term) ||
+            vehicle.model.toLowerCase().includes(term) ||
+            vehicle.category.toLowerCase().includes(term)
+        );
 
-                                <div className="p-6">
-
-                                    <h3 className="text-white text-2xl font-bold">
-
-                                        {vehicle.make} {vehicle.model}
-
-                                    </h3>
-
-                                    <p className="text-gray-400 mt-2">
-
-                                        {vehicle.category}
-
-                                    </p>
-
-                                    <p className="text-red-500 text-2xl mt-4 font-bold">
-
-                                        ₹{vehicle.price.toLocaleString("en-IN")}
-
-                                    </p>
-
-                                    <button
-                                        className="mt-6 w-full bg-red-600 hover:bg-red-700 transition py-3 rounded-xl text-white font-semibold"
-                                    >
-
-                                        Purchase
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        ))}
+    })
+    .map((vehicle) => (
+        <VehicleCard
+            key={vehicle.id}
+            vehicle={vehicle}
+        />
+))}
 
                     </div>
 
