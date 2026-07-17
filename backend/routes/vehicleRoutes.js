@@ -34,4 +34,16 @@ router.delete(
     vehicleController.deleteVehicle
 );
 
+router.post(
+    "/purchase/:id",
+    verifyToken,
+    vehicleController.purchaseVehicle
+);
+
+router.post(
+    "/restock/:id",
+    verifyToken,
+    isAdmin,
+    vehicleController.restockVehicle
+);
 module.exports = router;

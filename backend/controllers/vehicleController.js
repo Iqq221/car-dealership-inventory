@@ -232,3 +232,93 @@ exports.deleteVehicle = (req, res) => {
     );
 
 };
+
+exports.purchaseVehicle = (req, res) => {
+
+    const { id } = req.params;
+
+    db.query(
+        "SELECT * FROM vehicles WHERE id = ?",
+        [id],
+        (err, result) => {
+
+            if (err) {
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+            }
+
+            if (result.length === 0) {
+                return res.status(404).json({
+                    message: "Vehicle not found"
+                });
+            }
+
+            const vehicle = result[0];
+
+            if (vehicle.quantity <= 0) {
+                return res.status(400).json({
+                    message: "Vehicle is out of stock"
+                });
+            }
+
+            db.query(
+                "UPDATE vehicles SET quantity = quantity - 1 WHERE id = ?",
+                [id],
+                (err) => {
+
+                    if (err) {
+                        return res.status(500).json({
+                            message: "Purchase failed"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        message: "Vehicle purchased successfully"
+                    });
+
+                }
+            );
+
+        }
+    );
+
+};
+
+exports.restockVehicle = (req, res) => {
+
+    const { id } = req.params;
+
+    const { quantity } = req.body;
+
+    if (!quantity || quantity <= 0) {
+        return res.status(400).json({
+            message: "Invalid quantity"
+        });
+    }
+
+    db.query(
+        "UPDATE vehicles SET quantity = quantity + ? WHERE id = ?",
+        [quantity, id],
+        (err, result) => {
+
+            if (err) {
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    message: "Vehicle not found"
+                });
+            }
+
+            return res.status(200).json({
+                message: "Vehicle restocked successfully"
+            });
+
+        }
+    );
+
+};
