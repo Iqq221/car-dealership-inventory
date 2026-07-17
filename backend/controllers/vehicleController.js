@@ -112,3 +112,123 @@ exports.searchVehicles = (req, res) => {
     );
 
 };
+
+exports.getVehicleById = (req, res) => {
+
+    const { id } = req.params;
+
+    db.query(
+        "SELECT * FROM vehicles WHERE id = ?",
+        [id],
+        (err, result) => {
+
+            if (err) {
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+            }
+
+            if (result.length === 0) {
+                return res.status(404).json({
+                    message: "Vehicle not found"
+                });
+            }
+
+            return res.status(200).json(result[0]);
+
+        }
+    );
+
+};
+
+exports.updateVehicle = (req, res) => {
+
+    const { id } = req.params;
+
+    const {
+        make,
+        model,
+        year,
+        category,
+        price,
+        quantity,
+        image
+    } = req.body;
+
+    const sql = `
+        UPDATE vehicles
+        SET
+            make=?,
+            model=?,
+            year=?,
+            category=?,
+            price=?,
+            quantity=?,
+            image=?
+        WHERE id=?
+    `;
+
+    db.query(
+        sql,
+        [
+            make,
+            model,
+            year,
+            category,
+            price,
+            quantity,
+            image,
+            id
+        ],
+        (err, result) => {
+
+            if (err) {
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    message: "Vehicle not found"
+                });
+            }
+
+            return res.status(200).json({
+                message: "Vehicle updated successfully"
+            });
+
+        }
+    );
+
+};
+
+exports.deleteVehicle = (req, res) => {
+
+    const { id } = req.params;
+
+    db.query(
+        "DELETE FROM vehicles WHERE id=?",
+        [id],
+        (err, result) => {
+
+            if (err) {
+                return res.status(500).json({
+                    message: "Database Error"
+                });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    message: "Vehicle not found"
+                });
+            }
+
+            return res.status(200).json({
+                message: "Vehicle deleted successfully"
+            });
+
+        }
+    );
+
+};
