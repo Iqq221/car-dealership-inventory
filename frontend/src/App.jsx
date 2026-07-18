@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 
@@ -6,6 +6,22 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
+
+function AdminRoute({ children }) {
+
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if (role !== "admin") {
+        return <Navigate to="/" replace />;
+    }
+
+    return children;
+}
 
 function App() {
 
@@ -25,7 +41,11 @@ function App() {
 
                 <Route
                     path="/admin"
-                    element={<AdminDashboard />}
+                    element={
+                        <AdminRoute>
+                            <AdminDashboard />
+                        </AdminRoute>
+                    }
                 />
 
             </Routes>
