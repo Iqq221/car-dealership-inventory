@@ -2,15 +2,15 @@ const db = require("../config/db");
 
 exports.addVehicle = (req, res) => {
 
-    const {
-        make,
-        model,
-        year,
-        category,
-        price,
-        quantity,
-        image
-    } = req.body;
+     const {
+    make,
+    model,
+    year,
+    category,
+    price,
+    quantity,
+    image
+} = req.body;
 
     if (
         !make ||
