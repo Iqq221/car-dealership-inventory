@@ -194,18 +194,57 @@ http://localhost:5000
 
 # 📸 Application Screenshots
 
-| Feature | Screenshot |
-|----------|------------|
-| Login | `screenshots/login.png` |
-| Register | `screenshots/register.png` |
-| Customer Dashboard | `screenshots/home.png` |
-| Search & Filter | `screenshots/search-filter.png` |
-| Admin Dashboard | `screenshots/admin-dashboard.png` |
-| Add Vehicle | `screenshots/add-vehicle.png` |
-| Purchase Vehicle | `screenshots/purchase.png` |
+## Login
 
-> Replace the placeholder image paths with actual screenshots from your project.
+![Login Page](screenshots/login.png)
 
+---
+
+## Customer Home
+
+![Customer Home](screenshots/home.png)
+
+---
+
+## Search & Filter
+
+![Search and Filter](screenshots/filter_search.png)
+
+---
+
+## Admin Dashboard
+
+![Admin Dashboard](screenshots/admin_dashboard.png)
+
+---
+
+## Vehicle Inventory
+
+![Vehicle Inventory](screenshots/vehicles.png)
+
+---
+
+## Add Vehicle
+
+![Add Vehicle](screenshots/add_vehicle.png)
+
+---
+
+## Edit Vehicle
+
+![Edit Vehicle](screenshots/edit_vehicle.png)
+
+---
+
+## Delete Vehicle
+
+![Delete Vehicle](screenshots/delete_vehicle.png)
+
+---
+
+## Restock Vehicle
+
+![Restock Vehicle](screenshots/restock.png)
 ---
 
 # 🧪 Testing
