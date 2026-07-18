@@ -1,4 +1,31 @@
-function VehicleCard({ vehicle }) {
+import api from "../services/api";
+
+function VehicleCard({ vehicle, fetchVehicles }) {
+    async function handlePurchase() {
+
+    console.log("Purchase button clicked");
+
+    if (!window.confirm("Are you sure you want to purchase this vehicle?")) {
+        return;
+    }
+
+    console.log("Confirmed");
+
+    try {
+
+        await api.post(`/vehicles/purchase/${vehicle.id}`);
+
+        alert("Vehicle purchased successfully!");
+
+        fetchVehicles();
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
     return (
         <div
             className="
@@ -107,24 +134,27 @@ function VehicleCard({ vehicle }) {
                 </div>
 
                 <button
-                    disabled={vehicle.quantity === 0}
-                    className="
-                    mt-8
-                    w-full
-                    py-3
-                    rounded-xl
-                    font-semibold
-                    text-white
-                    bg-red-600
-                    hover:bg-red-700
-                    disabled:bg-gray-700
-                    disabled:cursor-not-allowed
-                    transition"
-                >
+    onClick={handlePurchase}
+    disabled={vehicle.quantity === 0}
+    className="
+        mt-8
+        w-full
+        py-3
+        rounded-xl
+        font-semibold
+        text-white
+        bg-red-600
+        hover:bg-red-700
+        disabled:bg-gray-700
+        disabled:cursor-not-allowed
+        transition"
+>
 
-                    Purchase
+    {vehicle.quantity === 0
+        ? "Out of Stock"
+        : "Purchase"}
 
-                </button>
+</button>
 
             </div>
 

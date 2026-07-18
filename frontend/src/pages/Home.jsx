@@ -1,31 +1,44 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import VehicleCard from "../components/VehicleCard";
+
 function Home() {
 
     const [vehicles, setVehicles] = useState([]);
     const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("");
+const [maxPrice, setMaxPrice] = useState("");
     useEffect(() => {
-
-        fetchVehicles();
-
-    }, []);
+    fetchVehicles();
+}, [search]);
 
     async function fetchVehicles() {
 
-        try {
+    try {
 
-            const response = await api.get("/vehicles");
+        let response;
 
-            setVehicles(response.data);
+        if (search.trim() === "") {
 
-        } catch (error) {
+            response = await api.get("/vehicles");
 
-            console.log(error);
+        } else {
+
+            response = await api.get(
+                `/vehicles/search?search=${search}`
+            );
 
         }
 
+        setVehicles(response.data);
+
+    } catch (error) {
+
+        console.log(error);
+
     }
+
+}
 
     return (
 
@@ -151,26 +164,56 @@ function Home() {
     "
 />
 
+<div className="flex gap-4 mt-6 mb-10">
+
+    <select
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        className="bg-slate-800 text-white p-4 rounded-xl"
+    >
+
+        <option value="">All Categories</option>
+        <option value="SUV">SUV</option>
+        <option value="Sedan">Sedan</option>
+        <option value="Luxury">Luxury</option>
+        <option value="Sports">Sports</option>
+        <option value="Hatchback">Hatchback</option>
+
+    </select>
+
+    <input
+        type="number"
+        placeholder="Maximum Price"
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(e.target.value)}
+        className="bg-slate-800 text-white p-4 rounded-xl flex-1"
+    />
+
+</div>
+
 </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
                        {vehicles
     .filter((vehicle) => {
 
-        const term = search.toLowerCase();
+    const categoryMatch =
+        category === "" ||
+        vehicle.category === category;
 
-        return (
-            vehicle.make.toLowerCase().includes(term) ||
-            vehicle.model.toLowerCase().includes(term) ||
-            vehicle.category.toLowerCase().includes(term)
-        );
+    const priceMatch =
+        maxPrice === "" ||
+        Number(vehicle.price) <= Number(maxPrice);
 
-    })
+    return categoryMatch && priceMatch;
+
+})
     .map((vehicle) => (
         <VehicleCard
-            key={vehicle.id}
-            vehicle={vehicle}
-        />
+    key={vehicle.id}
+    vehicle={vehicle}
+    fetchVehicles={fetchVehicles}
+/>
 ))}
 
                     </div>
