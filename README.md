@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="screenshots/home.png" alt="Car Dealership Inventory System" width="100%">
+</p>
+
 # 🚗 Car Dealership Inventory System
 
 A full-stack **Car Dealership Inventory System** built using **React, Tailwind CSS, Node.js, Express.js, MySQL, and JWT Authentication**.
