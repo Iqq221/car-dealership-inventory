@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import VehicleForm from "../components/admin/VehicleForm";
+import VehicleTable from "../components/admin/VehicleTable";
 
 function AdminDashboard() {
 
@@ -134,233 +136,134 @@ setEditingId(null);
 
 };
 
+const handleDelete = async (id) => {
+
+    if (!window.confirm("Delete this vehicle?")) return;
+
+    try {
+
+        await api.delete(`/vehicles/${id}`);
+
+        alert("Vehicle deleted successfully.");
+
+        fetchVehicles();
+
+    } catch (error) {
+
+        alert(error.response?.data?.message || "Delete failed");
+
+    }
+
+};
+
+const handleRestock = async (id) => {
+
+    const quantity = prompt("Enter quantity to restock:");
+
+    if (quantity === null) return;
+
+    if (isNaN(quantity) || Number(quantity) <= 0) {
+        return alert("Please enter a valid quantity.");
+    }
+
+    try {
+
+        await api.post(`/vehicles/restock/${id}`, {
+            quantity: Number(quantity)
+        });
+
+        alert("Vehicle restocked successfully!");
+
+        fetchVehicles();
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert(
+            error.response?.data?.message ||
+            "Failed to restock vehicle."
+        );
+
+    }
+
+};
+
+const totalVehicles = vehicles.length;
+
+const totalStock = vehicles.reduce(
+    (total, vehicle) => total + Number(vehicle.quantity),
+    0
+);
+
+const totalCategories = new Set(
+    vehicles.map(vehicle => vehicle.category)
+).size;
     return (
 
         <div className="min-h-screen bg-slate-950 pt-28 px-8">
 
             <div className="max-w-7xl mx-auto">
 
-                <h1 className="text-5xl font-bold text-white mb-10">
-                    Admin Dashboard
-                </h1>
+    <h1 className="text-5xl font-bold text-white mb-10">
+        Admin Dashboard
+    </h1>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
-                {/* Add Vehicle Form */}
+    <div className="bg-slate-900 rounded-xl p-6 shadow-lg">
 
-                <form
-                    onSubmit={handleAddVehicle}
-                    className="bg-slate-900 p-6 rounded-xl mb-10"
-                >
+        <h3 className="text-gray-400 text-lg">
+            Total Vehicles
+        </h3>
 
-                    <h2 className="text-2xl font-bold text-white mb-6">
-    {editingId ? "Edit Vehicle" : "Add New Vehicle"}
-</h2>
-                    <div className="grid grid-cols-2 gap-4">
+        <p className="text-4xl font-bold text-red-500 mt-3">
+            {totalVehicles}
+        </p>
 
-                        <input
-                            type="text"
-                            name="make"
-                            placeholder="Make"
-                            value={formData.make}
-                            onChange={handleChange}
-                            className="p-3 rounded bg-slate-800 text-white"
-                            required
-                        />
+    </div>
 
-                        <input
-                            type="text"
-                            name="model"
-                            placeholder="Model"
-                            value={formData.model}
-                            onChange={handleChange}
-                            className="p-3 rounded bg-slate-800 text-white"
-                            required
-                        />
+    <div className="bg-slate-900 rounded-xl p-6 shadow-lg">
 
-                        <input
-    type="number"
-    name="year"
-    placeholder="Year"
-    value={formData.year}
-    onChange={handleChange}
-    min="1900"
-    max={new Date().getFullYear() + 1}
-    className="p-3 rounded bg-slate-800 text-white"
-    required
-/>
+        <h3 className="text-gray-400 text-lg">
+            Total Stock
+        </h3>
 
-                      <select
-    name="category"
-    value={formData.category}
-    onChange={handleChange}
-    className="p-3 rounded bg-slate-800 text-white"
-    required
->
-    <option value="">Select Category</option>
-    <option value="SUV">SUV</option>
-    <option value="Sedan">Sedan</option>
-    <option value="Hatchback">Hatchback</option>
-    <option value="Coupe">Coupe</option>
-    <option value="Convertible">Convertible</option>
-    <option value="Pickup">Pickup</option>
-    <option value="EV">EV</option>
-</select>
+        <p className="text-4xl font-bold text-green-500 mt-3">
+            {totalStock}
+        </p>
 
-                        <input
-    type="number"
-    name="price"
-    placeholder="Price"
-    value={formData.price}
-    onChange={handleChange}
-    min="1"
-    className="p-3 rounded bg-slate-800 text-white"
-    required
-/>
+    </div>
 
-                        <input
-    type="number"
-    name="quantity"
-    placeholder="Quantity"
-    value={formData.quantity}
-    onChange={handleChange}
-    min="0"
-    className="p-3 rounded bg-slate-800 text-white"
-    required
-/>
-<div className="col-span-2">
+    <div className="bg-slate-900 rounded-xl p-6 shadow-lg">
 
-    <label className="block text-white mb-2">
-        Image Filename
-    </label>
+        <h3 className="text-gray-400 text-lg">
+            Categories
+        </h3>
 
-    <input
-        type="text"
-        name="image"
-        placeholder="fortuner.jpg"
-        value={formData.image}
-        onChange={handleChange}
-        className="p-3 rounded bg-slate-800 text-white w-full"
-        required
-    />
+        <p className="text-4xl font-bold text-blue-500 mt-3">
+            {totalCategories}
+        </p>
 
-    <p className="text-sm text-gray-400 mt-2">
-        Save the image inside the backend uploads folder and enter its filename here.
-    </p>
+    </div>
 
 </div>
-                    </div>
+    <VehicleForm
+        formData={formData}
+        handleChange={handleChange}
+        handleAddVehicle={handleAddVehicle}
+        editingId={editingId}
+        setEditingId={setEditingId}
+        setFormData={setFormData}
+    />
 
-                    <button
-                        type="submit"
-                        className="mt-6 bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg text-white font-semibold"
-                    >
-                        {editingId ? "Update Vehicle" : "Add Vehicle"}
-                    </button>
-                {editingId && (
-    <button
-        type="button"
-        onClick={() => {
+    <VehicleTable
+    vehicles={vehicles}
+    handleEdit={handleEdit}
+    handleDelete={handleDelete}
+    handleRestock={handleRestock}
+/>
 
-            setEditingId(null);
-
-            setFormData({
-                make: "",
-                model: "",
-                year: "",
-                category: "",
-                price: "",
-                quantity: "",
-                image: ""
-            });
-
-        }}
-        className="ml-4 bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded-lg text-white"
-    >
-        Cancel
-    </button>
-)}
-                </form>
-
-                {/* Vehicle Table */}
-
-                <div className="overflow-x-auto rounded-2xl">
-
-                    <table className="w-full bg-slate-900 text-white">
-
-                        <thead className="bg-red-600">
-
-                            <tr>
-
-                                <th className="p-4 text-left">Image</th>
-                                <th className="p-4 text-left">Make</th>
-                                <th className="p-4 text-left">Model</th>
-                                <th className="p-4 text-left">Category</th>
-                                <th className="p-4 text-left">Price</th>
-                                <th className="p-4 text-left">Stock</th>
-                                <th className="p-4 text-center">Actions</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {vehicles.map((vehicle) => (
-
-                                <tr
-                                    key={vehicle.id}
-                                    className="border-b border-slate-700 hover:bg-slate-800"
-                                >
-
-                                    <td className="p-4">
-
-                                        <img
-                                            src={`http://localhost:5000/uploads/${vehicle.image}`}
-                                            alt={vehicle.make}
-                                            className="w-28 h-20 object-cover rounded-lg"
-                                        />
-
-                                    </td>
-
-                                    <td className="p-4">{vehicle.make}</td>
-
-                                    <td className="p-4">{vehicle.model}</td>
-
-                                    <td className="p-4">{vehicle.category}</td>
-
-                                    <td className="p-4">
-                                        ₹{Number(vehicle.price).toLocaleString("en-IN")}
-                                    </td>
-
-                                    <td className="p-4">{vehicle.quantity}</td>
-
-                                    <td className="p-4 text-center">
-
-                                       <button
-    onClick={() => handleEdit(vehicle)}
-    className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg mr-2"
->
-    Edit
-</button>
-
-                                        <button
-                                            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg"
-                                        >
-                                            Delete
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            ))}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
+</div>
 
         </div>
 
