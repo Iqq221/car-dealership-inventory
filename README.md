@@ -251,6 +251,22 @@ http://localhost:5000
 ![Restock Vehicle](screenshots/restock.png)
 ---
 
+## Responsive Design
+
+The application is fully responsive and optimized for mobile devices using Tailwind CSS responsive utilities.
+
+### Mobile Home
+
+![Mobile Home](screenshots/mobile_home.png)
+
+---
+
+### Mobile Product Listing
+
+![Mobile Product Listing](screenshots/mobile_products.png)
+
+---
+
 # 🧪 Testing
 
 The project includes backend testing for core functionality.
