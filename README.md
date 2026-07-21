@@ -8,7 +8,8 @@ A full-stack **Car Dealership Inventory System** built using **React, Tailwind C
 
 The application provides a seamless experience for both customers and administrators. Customers can browse available vehicles, search and filter inventory, and purchase vehicles, while administrators can securely manage inventory through a dedicated dashboard.
 
----
+admin email- iqra@gmail.com 
+admin password- 123456
 
 ## ✨ Features
 
